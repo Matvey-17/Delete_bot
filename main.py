@@ -19,10 +19,12 @@ def delete_user(message: telebot.types.Message):
     try:
         if bot.get_chat_member(message.chat.id, message.reply_to_message.from_user.id).status in ['creator',
                                                                                                   'administrator']:
-            bot.send_message(message.chat.id, 'Невозможно удалить админа или создателя группы 🙅‍♂️')
-        else:
+            bot.send_message(message.chat.id, 'Нельзя удалять админов или создателя группы 🙅‍♂️')
+        elif bot.get_chat_member(message.chat.id, message.from_user.id).status in ['creator', 'administrator']:
             bot.kick_chat_member(message.chat.id, message.reply_to_message.from_user.id)
             bot.send_message(message.chat.id, f'Пользователь @{message.reply_to_message.from_user.username} удален 🗑')
+        else:
+            bot.send_message(message.chat.id, 'Вы не являетесь админом или создателем группы ❌')
     except AttributeError:
         with open('/Users/matveyvarlamov/cours_umschool/delete_bot/img/instance.png', 'rb') as photo:
             bot.send_photo(message.chat.id, photo, caption='Пример удаления пользователя')
